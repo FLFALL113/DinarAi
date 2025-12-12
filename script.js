@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Инициализация приложения
 function initApp() {
-    console.log('NeonShop приложение загружено');
+    console.log('TestName приложение загружено');
     
     // Установка текущего года в футере, если есть
     const yearElement = document.getElementById('current-year');

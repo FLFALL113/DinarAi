@@ -25,10 +25,17 @@
 
         <!-- Основной контент -->
         <main class="main-content">
-            <!-- Поиск -->
-            <div class="search-container">
+            <!-- Поиск(Открывает Каталог) -->
+            <div class="search-container" 
+                onclick="window.location.href='/catalog.html'"
+                style="cursor: default !important">
+
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" placeholder="Поиск товаров...">
+                <input type="text"
+                 class="search-input" 
+                 placeholder="Поиск товаров..."
+                 style="cursor: default">
+                 
             </div>
 
             <!-- Горизонтальный скролл категорий -->
@@ -69,7 +76,7 @@
                 </div>
             </div>
 
-            <!-- Информационные карточки -->
+            <!-- Информационные о товарах пользователя -->
             <div class="info-cards">
                 <div class="info-card">
                     <div class="info-icon order">

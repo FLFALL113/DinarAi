@@ -28,10 +28,13 @@
 
         <!-- Основной контент -->
         <main class="main-content">
-            <!-- Поиск -->
+            <!-- Поиск(осуществляется с помощью js 
+                        по id - catalog-search) -->
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id="catalog-search" placeholder="Поиск товаров...">
+                <input type="text" class="search-input" 
+                id="catalog-search" 
+                placeholder="Поиск товаров...">
             </div>
 
             <!-- Фильтры и сортировка -->
@@ -74,9 +77,10 @@
                 </div>
             </div>
 
-            <!-- Товары -->
+            <!-- Товары(8 - тестовое занчение) -->
             <div class="section-title">
                 <h3 id="products-count">Товары (8)</h3>
+                <!-- Меняет вид отображение(сетка,ряд) -->
                 <div class="view-mode">
                     <button class="view-mode-btn active" data-view="grid">
                         <i class="fas fa-th-large"></i>
