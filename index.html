@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonShop | Главная</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Шапка -->
+        <header class="app-header">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>NeonShop</h1>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn notification-btn">
+                    <i class="fas fa-bell"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <!-- Поиск -->
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Поиск товаров...">
+            </div>
+
+            <!-- Горизонтальный скролл категорий -->
+            <div class="section-title">
+                <h3>Категории</h3>
+                <a href="catalog.html" class="view-all">Все</a>
+            </div>
+            <div class="categories-scroll">
+                <div class="category-card">
+                    <div class="category-icon electronics">
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                    <span>Электроника</span>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon fashion">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <span>Одежда</span>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon home">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <span>Для дома</span>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon sports">
+                        <i class="fas fa-futbol"></i>
+                    </div>
+                    <span>Спорт</span>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon books">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <span>Книги</span>
+                </div>
+            </div>
+
+            <!-- Информационные карточки -->
+            <div class="info-cards">
+                <div class="info-card">
+                    <div class="info-icon order">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>2 заказа</h4>
+                        <p>В обработке</p>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon favorite">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>7 товаров</h4>
+                        <p>В избранном</p>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon cart">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>3 товара</h4>
+                        <p>В корзине</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Хит продаж -->
+            <div class="section-title">
+                <h3>Хит продаж</h3>
+                <a href="catalog.html" class="view-all">Все</a>
+            </div>
+            <div class="products-grid" id="featured-products">
+                <!-- Карточки товаров будут добавлены через JS -->
+            </div>
+        </main>
+
+        <!-- Навигация -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Главная</span>
+            </a>
+            <a href="catalog.html" class="nav-item">
+                <i class="fas fa-th-large"></i>
+                <span>Каталог</span>
+            </a>
+            <a href="favorites.html" class="nav-item">
+                <i class="fas fa-heart"></i>
+                <span>Избранное</span>
+            </a>
+            <a href="cart.html" class="nav-item">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Корзина</span>
+                <span class="cart-count">3</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Профиль</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="products.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

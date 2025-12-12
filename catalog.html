@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonShop | Каталог</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Шапка -->
+        <header class="app-header">
+            <button class="icon-btn back-btn" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>Каталог</h1>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn filter-btn" id="filter-toggle">
+                    <i class="fas fa-filter"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <!-- Поиск -->
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="catalog-search" placeholder="Поиск товаров...">
+            </div>
+
+            <!-- Фильтры и сортировка -->
+            <div class="filters-container" id="filters-panel">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="sort-select">Сортировка:</label>
+                        <select id="sort-select" class="sort-dropdown">
+                            <option value="popular">По популярности</option>
+                            <option value="price_asc">По цене (сначала дешевые)</option>
+                            <option value="price_desc">По цене (сначала дорогие)</option>
+                            <option value="new">Сначала новые</option>
+                            <option value="rating">По рейтингу</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="category-select">Категория:</label>
+                        <select id="category-select" class="sort-dropdown">
+                            <option value="all">Все категории</option>
+                            <option value="electronics">Электроника</option>
+                            <option value="fashion">Одежда</option>
+                            <option value="home">Для дома</option>
+                            <option value="sports">Спорт</option>
+                            <option value="books">Книги</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="price-filter">
+                    <h4>Цена:</h4>
+                    <div class="price-range">
+                        <input type="range" id="price-min" min="0" max="50000" value="0" class="price-slider">
+                        <input type="range" id="price-max" min="0" max="50000" value="50000" class="price-slider">
+                    </div>
+                    <div class="price-values">
+                        <span id="min-price-value">0 ₽</span>
+                        <span id="max-price-value">50000 ₽</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Товары -->
+            <div class="section-title">
+                <h3 id="products-count">Товары (8)</h3>
+                <div class="view-mode">
+                    <button class="view-mode-btn active" data-view="grid">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="view-mode-btn" data-view="list">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="products-container" id="products-container">
+                <div class="products-grid" id="products-grid">
+                    <!-- Товары будут загружены через JS -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Навигация -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Главная</span>
+            </a>
+            <a href="catalog.html" class="nav-item active">
+                <i class="fas fa-th-large"></i>
+                <span>Каталог</span>
+            </a>
+            <a href="favorites.html" class="nav-item">
+                <i class="fas fa-heart"></i>
+                <span>Избранное</span>
+            </a>
+            <a href="cart.html" class="nav-item">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Корзина</span>
+                <span class="cart-count">0</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Профиль</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="products.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Инициализация каталога
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCatalogProducts();
+            setupCatalogFilters();
+            updateCartCount();
+            updateFavoriteCount();
+        });
+        
+        // Загрузка товаров в каталог
+        function loadCatalogProducts() {
+            const container = document.getElementById('products-grid');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            // Получаем все товары
+            products.forEach(product => {
+                const productCard = createProductCard(product);
+                container.appendChild(productCard);
+            });
+            
+            // Обновляем счетчик товаров
+            document.getElementById('products-count').textContent = `Товары (${products.length})`;
+        }
+        
+        // Настройка фильтров каталога
+        function setupCatalogFilters() {
+            // Переключение панели фильтров
+            const filterToggle = document.getElementById('filter-toggle');
+            const filtersPanel = document.getElementById('filters-panel');
+            
+            if (filterToggle && filtersPanel) {
+                filterToggle.addEventListener('click', function() {
+                    filtersPanel.classList.toggle('visible');
+                    this.classList.toggle('active');
+                });
+            }
+            
+            // Сортировка
+            const sortSelect = document.getElementById('sort-select');
+            if (sortSelect) {
+                sortSelect.addEventListener('change', function() {
+                    sortProducts(this.value);
+                });
+            }
+            
+            // Фильтрация по категории
+            const categorySelect = document.getElementById('category-select');
+            if (categorySelect) {
+                categorySelect.addEventListener('change', function() {
+                    filterProducts();
+                });
+            }
+            
+            // Фильтр по цене
+            const priceMin = document.getElementById('price-min');
+            const priceMax = document.getElementById('price-max');
+            const minPriceValue = document.getElementById('min-price-value');
+            const maxPriceValue = document.getElementById('max-price-value');
+            
+            if (priceMin && priceMax && minPriceValue && maxPriceValue) {
+                // Обновление значений
+                const updatePriceValues = () => {
+                    minPriceValue.textContent = `${priceMin.value} ₽`;
+                    maxPriceValue.textContent = `${priceMax.value} ₽`;
+                    filterProducts();
+                };
+                
+                priceMin.addEventListener('input', updatePriceValues);
+                priceMax.addEventListener('input', updatePriceValues);
+            }
+            
+            // Поиск в каталоге
+            const searchInput = document.getElementById('catalog-search');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    filterProducts();
+                });
+            }
+            
+            // Переключение вида (сетка/список)
+            const viewModeBtns = document.querySelectorAll('.view-mode-btn');
+            viewModeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const view = this.dataset.view;
+                    
+                    // Обновляем активную кнопку
+                    viewModeBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Меняем вид отображения
+                    const container = document.getElementById('products-grid');
+                    if (container) {
+                        container.className = view === 'grid' ? 'products-grid' : 'products-list';
+                    }
+                });
+            });
+        }
+        
+        // Сортировка товаров
+        function sortProducts(sortBy) {
+            let sortedProducts = [...products];
+            
+            switch(sortBy) {
+                case 'price_asc':
+                    sortedProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price_desc':
+                    sortedProducts.sort((a, b) => b.price - a.price);
+                    break;
+                case 'new':
+                    // Предположим, что новые товары имеют больший id
+                    sortedProducts.sort((a, b) => b.id - a.id);
+                    break;
+                case 'rating':
+                    sortedProducts.sort((a, b) => b.rating - a.rating);
+                    break;
+                case 'popular':
+                default:
+                    // По умолчанию - по популярности (рейтинг + количество отзывов)
+                    sortedProducts.sort((a, b) => {
+                        const aScore = a.rating * 10 + a.reviews / 100;
+                        const bScore = b.rating * 10 + b.reviews / 100;
+                        return bScore - aScore;
+                    });
+            }
+            
+            // Отображаем отсортированные товары
+            displaySortedProducts(sortedProducts);
+        }
+        
+        // Фильтрация товаров
+        function filterProducts() {
+            const searchQuery = document.getElementById('catalog-search').value.toLowerCase();
+            const category = document.getElementById('category-select').value;
+            const minPrice = parseInt(document.getElementById('price-min').value);
+            const maxPrice = parseInt(document.getElementById('price-max').value);
+            
+            let filteredProducts = products;
+            
+            // Фильтр по поисковому запросу
+            if (searchQuery) {
+                filteredProducts = filteredProducts.filter(product => 
+                    product.name.toLowerCase().includes(searchQuery) ||
+                    product.description.toLowerCase().includes(searchQuery)
+                );
+            }
+            
+            // Фильтр по категории
+            if (category !== 'all') {
+                filteredProducts = filteredProducts.filter(product => 
+                    product.category === category
+                );
+            }
+            
+            // Фильтр по цене
+            filteredProducts = filteredProducts.filter(product => 
+                product.price >= minPrice && product.price <= maxPrice
+            );
+            
+            // Применяем текущую сортировку
+            const sortSelect = document.getElementById('sort-select');
+            if (sortSelect) {
+                const sortBy = sortSelect.value;
+                
+                switch(sortBy) {
+                    case 'price_asc':
+                        filteredProducts.sort((a, b) => a.price - b.price);
+                        break;
+                    case 'price_desc':
+                        filteredProducts.sort((a, b) => b.price - a.price);
+                        break;
+                    case 'new':
+                        filteredProducts.sort((a, b) => b.id - a.id);
+                        break;
+                    case 'rating':
+                        filteredProducts.sort((a, b) => b.rating - a.rating);
+                        break;
+                }
+            }
+            
+            // Отображаем отфильтрованные товары
+            displaySortedProducts(filteredProducts);
+            
+            // Обновляем счетчик
+            document.getElementById('products-count').textContent = `Товары (${filteredProducts.length})`;
+        }
+        
+        // Отображение отсортированных/отфильтрованных товаров
+        function displaySortedProducts(sortedProducts) {
+            const container = document.getElementById('products-grid');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (sortedProducts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>Товары не найдены</h3>
+                        <p>Попробуйте изменить параметры поиска</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            sortedProducts.forEach(product => {
+                const productCard = createProductCard(product);
+                container.appendChild(productCard);
+            });
+        }
+    </script>
+</body>
+</html>

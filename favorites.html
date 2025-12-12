@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonShop | Избранное</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Шапка -->
+        <header class="app-header">
+            <button class="icon-btn back-btn" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>Избранное</h1>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn clear-btn" id="clear-favorites">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="favorites-container" id="favorites-container">
+                <!-- Избранные товары будут загружены через JS -->
+            </div>
+        </main>
+
+        <!-- Навигация -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Главная</span>
+            </a>
+            <a href="catalog.html" class="nav-item">
+                <i class="fas fa-th-large"></i>
+                <span>Каталог</span>
+            </a>
+            <a href="favorites.html" class="nav-item active">
+                <i class="fas fa-heart"></i>
+                <span>Избранное</span>
+                <span class="favorite-count">0</span>
+            </a>
+            <a href="cart.html" class="nav-item">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Корзина</span>
+                <span class="cart-count">0</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Профиль</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="products.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Загрузка избранных товаров
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFavoriteProducts();
+            updateCartCount();
+            updateFavoriteCount();
+            
+            // Очистка избранного
+            const clearBtn = document.getElementById('clear-favorites');
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function() {
+                    if (confirm('Очистить все избранные товары?')) {
+                        localStorage.setItem('favorites', JSON.stringify([]));
+                        loadFavoriteProducts();
+                        updateFavoriteCount();
+                        
+                        // Показываем уведомление
+                        showNotification('Избранное очищено');
+                    }
+                });
+            }
+        });
+        
+        // Загрузка товаров из избранного
+        function loadFavoriteProducts() {
+            const container = document.getElementById('favorites-container');
+            if (!container) return;
+            
+            // Получаем избранное из localStorage
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            
+            if (favorites.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="far fa-heart"></i>
+                        <h3>Избранное пусто</h3>
+                        <p>Добавляйте товары в избранное, нажимая на сердечко</p>
+                        <a href="catalog.html" class="btn-primary" style="margin-top: 20px;">Перейти в каталог</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            // Загружаем товары
+            favorites.forEach(favoriteId => {
+                const product = getProductById(favoriteId);
+                if (product) {
+                    const favoriteItem = createFavoriteItem(product);
+                    container.appendChild(favoriteItem);
+                }
+            });
+        }
+        
+        // Создание элемента избранного
+        function createFavoriteItem(product) {
+            const item = document.createElement('div');
+            item.className = 'favorite-item';
+            item.dataset.id = product.id;
+            
+            item.innerHTML = `
+                <div class="favorite-item-image">
+                    <i class="${product.icon}"></i>
+                </div>
+                <div class="favorite-item-info">
+                    <h3 class="favorite-item-title">${product.name}</h3>
+                    <div class="favorite-item-price">${product.price} ₽</div>
+                    <div class="favorite-item-actions">
+                        <button class="remove-from-favorites" data-id="${product.id}">
+                            <i class="fas fa-trash-alt"></i> Удалить
+                        </button>
+                        <button class="add-to-cart-from-favorite" data-id="${product.id}">
+                            <i class="fas fa-cart-plus"></i> В корзину
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Обработчики событий
+            const removeBtn = item.querySelector('.remove-from-favorites');
+            const cartBtn = item.querySelector('.add-to-cart-from-favorite');
+            
+            removeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                removeFromFavorites(product.id);
+                item.remove();
+                updateFavoriteCount();
+            });
+            
+            cartBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                addToCart(product.id);
+                showNotification('Товар добавлен в корзину');
+            });
+            
+            // Клик по товару - переход на страницу товара
+            item.addEventListener('click', function(e) {
+                if (!e.target.closest('button')) {
+                    window.location.href = `product.html?id=${product.id}`;
+                }
+            });
+            
+            return item;
+        }
+        
+        // Удаление из избранного
+        function removeFromFavorites(productId) {
+            let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            favorites = favorites.filter(id => id !== productId);
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonShop | Товар</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Шапка товара -->
+        <header class="app-header">
+            <button class="icon-btn back-btn" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>NeonShop</h1>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn share-btn">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Контент товара -->
+        <main class="main-content">
+            <div id="product-details">
+                <!-- Заглушка, контент загрузится через JS -->
+                <div class="loading">Загрузка товара...</div>
+            </div>
+        </main>
+
+        <!-- Нижняя панель с действиями -->
+        <div class="product-actions-bottom">
+            <button class="add-to-favorite-large" id="product-favorite-btn">
+                <i class="far fa-heart"></i>
+            </button>
+            <button class="add-to-cart-large" id="product-cart-btn">
+                Добавить в корзину
+            </button>
+            <button class="buy-now-btn" id="buy-now-btn">
+                Купить сейчас
+            </button>
+        </div>
+        
+        <!-- Навигация -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Главная</span>
+            </a>
+            <a href="catalog.html" class="nav-item">
+                <i class="fas fa-th-large"></i>
+                <span>Каталог</span>
+            </a>
+            <a href="favorites.html" class="nav-item">
+                <i class="fas fa-heart"></i>
+                <span>Избранное</span>
+            </a>
+            <a href="cart.html" class="nav-item">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Корзина</span>
+                <span class="cart-count">0</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Профиль</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="products.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Загрузка данных товара при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Получаем ID товара из URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            
+            if (productId) {
+                loadProductDetails(productId);
+            } else {
+                document.getElementById('product-details').innerHTML = 
+                    '<div class="error">Товар не найден</div>';
+            }
+            
+            // Обновляем счетчики
+            updateCartCount();
+            updateFavoriteCount();
+            
+            // Настройка кнопок
+            setupProductPageButtons();
+        });
+        
+        // Загрузка деталей товара
+        function loadProductDetails(productId) {
+            const product = getProductById(productId);
+            const container = document.getElementById('product-details');
+            
+            if (!product) {
+                container.innerHTML = '<div class="error">Товар не найден</div>';
+                return;
+            }
+            
+            // Проверяем, есть ли товар в избранном
+            let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            const isFavorite = favorites.includes(product.id);
+            
+            container.innerHTML = `
+                <!-- Изображение товара -->
+                <div class="product-image-large">
+                    <i class="${product.icon}"></i>
+                </div>
+                
+                <!-- Основная информация -->
+                <div class="product-info-section">
+                    <h2 class="product-title-large">${product.name}</h2>
+                    <div class="product-price-large">${product.price} ₽</div>
+                    
+                    <!-- Рейтинг -->
+                    <div class="product-rating">
+                        <div class="stars">
+                            ${getStarsHTML(product.rating)}
+                        </div>
+                        <span class="rating-value">${product.rating}</span>
+                        <span class="reviews-count">(${product.reviews} отзывов)</span>
+                    </div>
+                    
+                    <!-- Наличие -->
+                    <div class="product-availability ${product.inStock ? 'in-stock' : 'out-of-stock'}">
+                        <i class="fas ${product.inStock ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+                        ${product.inStock ? 'В наличии' : 'Нет в наличии'}
+                    </div>
+                </div>
+                
+                <!-- Описание -->
+                <div class="product-section">
+                    <h3 class="section-title">Описание</h3>
+                    <p class="product-description">${product.description}</p>
+                </div>
+                
+                <!-- Размерная сетка -->
+                <div class="product-section">
+                    <h3 class="section-title">Размеры</h3>
+                    <div class="size-options">
+                        ${product.sizes.map(size => `
+                            <div class="size-option">${size}</div>
+                        `).join('')}
+                    </div>
+                    <p class="size-guide-note">Как измерять: используйте сантиметровую ленту для точных замеров</p>
+                </div>
+                
+                <!-- Доставка -->
+                <div class="product-section">
+                    <h3 class="section-title">Доставка</h3>
+                    <div class="delivery-info">
+                        <i class="fas fa-shipping-fast"></i>
+                        <div>
+                            <h4>${product.delivery.split(',')[0]}</h4>
+                            <p>${product.delivery.split(',').slice(1).join(',')}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Отзывы -->
+                <div class="product-section">
+                    <h3 class="section-title">Отзывы (${product.reviews})</h3>
+                    <div class="review">
+                        <div class="review-header">
+                            <div class="review-author">Алексей Иванов</div>
+                            <div class="review-rating">
+                                ${getStarsHTML(5)}
+                            </div>
+                        </div>
+                        <p class="review-text">Отличный товар, полностью соответствует описанию. Рекомендую!</p>
+                        <div class="review-date">2 недели назад</div>
+                    </div>
+                    
+                    <div class="review">
+                        <div class="review-header">
+                            <div class="review-author">Мария Петрова</div>
+                            <div class="review-rating">
+                                ${getStarsHTML(4)}
+                            </div>
+                        </div>
+                        <p class="review-text">Хорошее качество, но доставка заняла больше времени, чем ожидалось.</p>
+                        <div class="review-date">месяц назад</div>
+                    </div>
+                    
+                    <button class="view-all-reviews">Показать все отзывы</button>
+                </div>
+            `;
+            
+            // Обновляем кнопку избранного
+            const favoriteBtn = document.getElementById('product-favorite-btn');
+            if (isFavorite) {
+                favoriteBtn.innerHTML = '<i class="fas fa-heart"></i>';
+                favoriteBtn.style.color = '#ff66cc';
+            } else {
+                favoriteBtn.innerHTML = '<i class="far fa-heart"></i>';
+                favoriteBtn.style.color = '';
+            }
+            
+            // Настраиваем кнопку "Купить сейчас"
+            document.getElementById('buy-now-btn').addEventListener('click', function() {
+                addToCart(product.id);
+                window.location.href = 'cart.html';
+            });
+        }
+        
+        // Функция для генерации HTML звезд рейтинга
+        function getStarsHTML(rating) {
+            let starsHTML = '';
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            
+            for (let i = 1; i <= 5; i++) {
+                if (i <= fullStars) {
+                    starsHTML += '<i class="fas fa-star"></i>';
+                } else if (i === fullStars + 1 && hasHalfStar) {
+                    starsHTML += '<i class="fas fa-star-half-alt"></i>';
+                } else {
+                    starsHTML += '<i class="far fa-star"></i>';
+                }
+            }
+            
+            return starsHTML;
+        }
+        
+        // Настройка кнопок на странице товара
+        function setupProductPageButtons() {
+            // Кнопка избранного
+            const favoriteBtn = document.getElementById('product-favorite-btn');
+            if (favoriteBtn) {
+                favoriteBtn.addEventListener('click', function() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const productId = urlParams.get('id');
+                    
+                    if (productId) {
+                        const isNowFavorite = toggleFavorite(productId);
+                        
+                        if (isNowFavorite) {
+                            this.innerHTML = '<i class="fas fa-heart"></i>';
+                            this.style.color = '#ff66cc';
+                        } else {
+                            this.innerHTML = '<i class="far fa-heart"></i>';
+                            this.style.color = '';
+                        }
+                    }
+                });
+            }
+            
+            // Кнопка добавления в корзину
+            const cartBtn = document.getElementById('product-cart-btn');
+            if (cartBtn) {
+                cartBtn.addEventListener('click', function() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const productId = urlParams.get('id');
+                    
+                    if (productId) {
+                        addToCart(productId);
+                        
+                        // Анимация кнопки
+                        this.textContent = 'Добавлено!';
+                        this.style.background = 'linear-gradient(45deg, #00cc66, #00ff88)';
+                        
+                        setTimeout(() => {
+                            this.textContent = 'Добавить в корзину';
+                            this.style.background = '';
+                        }, 2000);
+                    }
+                });
+            }
+            
+            // Кнопка "Поделиться"
+            const shareBtn = document.querySelector('.share-btn');
+            if (shareBtn) {
+                shareBtn.addEventListener('click', function() {
+                    if (navigator.share) {
+                        navigator.share({
+                            title: document.querySelector('.product-title-large').textContent,
+                            text: 'Посмотрите этот товар в NeonShop!',
+                            url: window.location.href
+                        });
+                    } else {
+                        alert('Ссылка скопирована в буфер обмена');
+                        // В реальном приложении здесь будет копирование ссылки
+                    }
+                });
+            }
+        }
+        
+        // Добавление дополнительных стилей для страницы товара
+        const style = document.createElement('style');
+        style.textContent = `
+            .product-image-large {
+                width: 100%;
+                height: 200px;
+                background: linear-gradient(45deg, #121225, #1a1a35);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #00ccff;
+                font-size: 80px;
+                border-radius: 20px;
+                margin-bottom: 20px;
+                border: 1px solid rgba(100, 150, 255, 0.2);
+            }
+            
+            .product-info-section {
+                background: rgba(18, 18, 37, 0.8);
+                border-radius: 20px;
+                padding: 20px;
+                margin-bottom: 20px;
+                border: 1px solid rgba(100, 150, 255, 0.1);
+            }
+            
+            .product-title-large {
+                font-size: 22px;
+                font-weight: 700;
+                margin-bottom: 10px;
+                color: #f0f0f0;
+            }
+            
+            .product-price-large {
+                font-size: 28px;
+                font-weight: 800;
+                color: #00ccff;
+                margin-bottom: 15px;
+            }
+            
+            .product-rating {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+            
+            .stars {
+                color: #ffcc00;
+            }
+            
+            .rating-value {
+                font-weight: 600;
+                font-size: 16px;
+            }
+            
+            .reviews-count {
+                color: #aaa;
+                font-size: 14px;
+            }
+            
+            .product-availability {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 16px;
+                padding: 8px 15px;
+                border-radius: 10px;
+                width: fit-content;
+            }
+            
+            .in-stock {
+                background: rgba(102, 255, 153, 0.1);
+                color: #66ff99;
+                border: 1px solid rgba(102, 255, 153, 0.3);
+            }
+            
+            .out-of-stock {
+                background: rgba(255, 102, 102, 0.1);
+                color: #ff6666;
+                border: 1px solid rgba(255, 102, 102, 0.3);
+            }
+            
+            .product-section {
+                background: rgba(18, 18, 37, 0.8);
+                border-radius: 20px;
+                padding: 20px;
+                margin-bottom: 20px;
+                border: 1px solid rgba(100, 150, 255, 0.1);
+            }
+            
+            .product-description {
+                line-height: 1.6;
+                color: #ccc;
+            }
+            
+            .size-options {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+            
+            .size-option {
+                padding: 10px 15px;
+                background: rgba(100, 150, 255, 0.1);
+                border: 1px solid rgba(100, 150, 255, 0.3);
+                border-radius: 10px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            
+            .size-option:hover {
+                background: rgba(100, 150, 255, 0.2);
+            }
+            
+            .size-guide-note {
+                color: #aaa;
+                font-size: 14px;
+                font-style: italic;
+            }
+            
+            .delivery-info {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                padding: 15px;
+                background: rgba(100, 150, 255, 0.05);
+                border-radius: 15px;
+                border: 1px solid rgba(100, 150, 255, 0.1);
+            }
+            
+            .delivery-info i {
+                font-size: 24px;
+                color: #00ccff;
+            }
+            
+            .delivery-info h4 {
+                font-size: 16px;
+                margin-bottom: 5px;
+            }
+            
+            .delivery-info p {
+                color: #aaa;
+                font-size: 14px;
+            }
+            
+            .review {
+                padding: 15px;
+                background: rgba(100, 150, 255, 0.05);
+                border-radius: 15px;
+                margin-bottom: 15px;
+                border: 1px solid rgba(100, 150, 255, 0.1);
+            }
+            
+            .review-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+            
+            .review-author {
+                font-weight: 600;
+            }
+            
+            .review-rating {
+                color: #ffcc00;
+            }
+            
+            .review-text {
+                margin-bottom: 10px;
+                line-height: 1.5;
+            }
+            
+            .review-date {
+                color: #777;
+                font-size: 14px;
+            }
+            
+            .view-all-reviews {
+                width: 100%;
+                background: rgba(100, 150, 255, 0.1);
+                border: 1px solid rgba(100, 150, 255, 0.3);
+                color: #00ccff;
+                padding: 12px;
+                border-radius: 12px;
+                font-size: 16px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            
+            .view-all-reviews:hover {
+                background: rgba(100, 150, 255, 0.2);
+            }
+            
+            .product-actions-bottom {
+                display: flex;
+                padding: 15px 20px;
+                background: rgba(18, 18, 37, 0.95);
+                border-top: 1px solid rgba(100, 150, 255, 0.1);
+                gap: 10px;
+            }
+            
+            .add-to-favorite-large {
+                width: 50px;
+                height: 50px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(255, 102, 204, 0.1);
+                border: 1px solid rgba(255, 102, 204, 0.3);
+                color: #ff66cc;
+                font-size: 20px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            
+            .add-to-favorite-large:hover {
+                background: rgba(255, 102, 204, 0.2);
+            }
+            
+            .add-to-cart-large {
+                flex: 1;
+                background: rgba(100, 150, 255, 0.1);
+                border: 1px solid rgba(100, 150, 255, 0.3);
+                color: #00ccff;
+                padding: 15px;
+                border-radius: 12px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            
+            .add-to-cart-large:hover {
+                background: rgba(100, 150, 255, 0.2);
+            }
+            
+            .buy-now-btn {
+                flex: 1;
+                background: linear-gradient(45deg, #0066ff, #00ccff);
+                border: none;
+                color: white;
+                padding: 15px;
+                border-radius: 12px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            
+            .buy-now-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 150, 255, 0.3);
+            }
+            
+            .loading, .error {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 300px;
+                font-size: 18px;
+                color: #aaa;
+            }
+            
+            .error {
+                color: #ff6666;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

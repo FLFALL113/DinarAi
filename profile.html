@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonShop | Профиль</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Шапка -->
+        <header class="app-header">
+            <button class="icon-btn back-btn" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>Профиль</h1>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn settings-btn" id="settings-btn">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <!-- Информация профиля -->
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="profile-info">
+                    <h2 id="user-name">Иван Петров</h2>
+                    <p id="user-email">ivan.petrov@example.com</p>
+                    <button class="edit-profile-btn" id="edit-profile-btn">
+                        <i class="fas fa-edit"></i> Редактировать
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Статистика -->
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="orders-count">5</div>
+                    <div class="stat-label">Заказов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="favorites-count">0</div>
+                    <div class="stat-label">Избранное</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="cart-count">0</div>
+                    <div class="stat-label">Корзина</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">4.8</div>
+                    <div class="stat-label">Рейтинг</div>
+                </div>
+            </div>
+            
+            <!-- Детали профиля -->
+            <div class="profile-section">
+                <h3 class="section-title">Личная информация</h3>
+                <div class="profile-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Имя:</span>
+                        <span class="detail-value" id="detail-name">Иван</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Фамилия:</span>
+                        <span class="detail-value" id="detail-surname">Петров</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Телефон:</span>
+                        <span class="detail-value" id="detail-phone">+7 (999) 123-45-67</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Адрес:</span>
+                        <span class="detail-value" id="detail-address">ул. Примерная, д. 10, кв. 25</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Дата рождения:</span>
+                        <span class="detail-value" id="detail-birthday">15.05.1990</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- История заказов -->
+            <div class="profile-section">
+                <h3 class="section-title">
+                    История заказов
+                    <a href="#" class="view-all">Все заказы</a>
+                </h3>
+                <div class="orders-list" id="orders-list">
+                    <!-- Заказы будут загружены через JS -->
+                </div>
+            </div>
+            
+            <!-- Настройки -->
+            <div class="profile-section">
+                <h3 class="section-title">Настройки</h3>
+                <div class="settings-list">
+                    <div class="setting-item">
+                        <i class="fas fa-bell"></i>
+                        <span>Уведомления</span>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <i class="fas fa-palette"></i>
+                        <span>Темная тема</span>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <i class="fas fa-language"></i>
+                        <span>Язык: Русский</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="setting-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Безопасность</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Выход -->
+            <button class="logout-btn" id="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Выйти из аккаунта
+            </button>
+        </main>
+
+        <!-- Навигация -->
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Главная</span>
+            </a>
+            <a href="catalog.html" class="nav-item">
+                <i class="fas fa-th-large"></i>
+                <span>Каталог</span>
+            </a>
+            <a href="favorites.html" class="nav-item">
+                <i class="fas fa-heart"></i>
+                <span>Избранное</span>
+                <span class="favorite-count">0</span>
+            </a>
+            <a href="cart.html" class="nav-item">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Корзина</span>
+                <span class="cart-count">0</span>
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <i class="fas fa-user"></i>
+                <span>Профиль</span>
+            </a>
+        </nav>
+        
+        <!-- Модальное окно редактирования профиля -->
+        <div class="modal-overlay" id="edit-profile-modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Редактировать профиль</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-profile-form">
+                        <div class="form-group">
+                            <label for="edit-name">Имя:</label>
+                            <input type="text" id="edit-name" value="Иван">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-surname">Фамилия:</label>
+                            <input type="text" id="edit-surname" value="Петров">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-email">Email:</label>
+                            <input type="email" id="edit-email" value="ivan.petrov@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-phone">Телефон:</label>
+                            <input type="tel" id="edit-phone" value="+79991234567">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-address">Адрес:</label>
+                            <textarea id="edit-address">ул. Примерная, д. 10, кв. 25</textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Сохранить изменения</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="products.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Загрузка профиля
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProfileData();
+            loadOrders();
+            updateCartCount();
+            updateFavoriteCount();
+            setupProfileModal();
+            
+            // Выход из аккаунта
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    if (confirm('Вы уверены, что хотите выйти из аккаунта?')) {
+                        // В реальном приложении здесь будет очистка сессии
+                        alert('Вы вышли из аккаунта');
+                        window.location.href = 'index.html';
+                    }
+                });
+            }
+            
+            // Настройки
+            const settingsBtn = document.getElementById('settings-btn');
+            if (settingsBtn) {
+                settingsBtn.addEventListener('click', function() {
+                    alert('Настройки приложения. В реальном приложении здесь будет больше опций.');
+                });
+            }
+        });
+        
+        // Загрузка данных профиля
+        function loadProfileData() {
+            // Получаем данные из localStorage или используем значения по умолчанию
+            const profile = JSON.parse(localStorage.getItem('profile')) || {
+                name: 'Иван',
+                surname: 'Петров',
+                email: 'ivan.petrov@example.com',
+                phone: '+7 (999) 123-45-67',
+                address: 'ул. Примерная, д. 10, кв. 25',
+                birthday: '15.05.1990'
+            };
+            
+            // Обновляем DOM элементы
+            document.getElementById('user-name').textContent = `${profile.name} ${profile.surname}`;
+            document.getElementById('user-email').textContent = profile.email;
+            document.getElementById('detail-name').textContent = profile.name;
+            document.getElementById('detail-surname').textContent = profile.surname;
+            document.getElementById('detail-phone').textContent = profile.phone;
+            document.getElementById('detail-address').textContent = profile.address;
+            document.getElementById('detail-birthday').textContent = profile.birthday;
+            
+            // Обновляем статистику
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            document.getElementById('favorites-count').textContent = favorites.length;
+            document.getElementById('cart-count').textContent = cart.reduce((total, item) => total + item.quantity, 0);
+        }
+        
+        // Загрузка истории заказов
+        function loadOrders() {
+            const container = document.getElementById('orders-list');
+            if (!container) return;
+            
+            // Моковые данные заказов
+            const orders = [
+                { id: 1001, date: '15.10.2023', total: 15498, status: 'Доставлен', items: 3 },
+                { id: 1002, date: '10.10.2023', total: 7999, status: 'Доставлен', items: 1 },
+                { id: 1003, date: '05.10.2023', total: 29999, status: 'В обработке', items: 2 }
+            ];
+            
+            // Обновляем счетчик заказов
+            document.getElementById('orders-count').textContent = orders.length;
+            
+            if (orders.length === 0) {
+                container.innerHTML = '<p class="no-orders">У вас еще нет заказов</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            orders.forEach(order => {
+                const orderElement = document.createElement('div');
+                orderElement.className = 'order-item';
+                
+                orderElement.innerHTML = `
+                    <div class="order-header">
+                        <div>
+                            <h4>Заказ #${order.id}</h4>
+                            <p class="order-date">${order.date} • ${order.items} товара</p>
+                        </div>
+                        <span class="order-status ${order.status === 'Доставлен' ? 'delivered' : 'processing'}">
+                            ${order.status}
+                        </span>
+                    </div>
+                    <div class="order-total">
+                        <span>Сумма заказа:</span>
+                        <span class="order-price">${order.total} ₽</span>
+                    </div>
+                    <div class="order-actions">
+                        <button class="order-details-btn" data-id="${order.id}">
+                            <i class="fas fa-info-circle"></i> Подробности
+                        </button>
+                        <button class="order-repeat-btn" data-id="${order.id}">
+                            <i class="fas fa-redo"></i> Повторить заказ
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(orderElement);
+            });
+        }
+        
+        // Настройка модального окна редактирования профиля
+        function setupProfileModal() {
+            const editBtn = document.getElementById('edit-profile-btn');
+            const modal = document.getElementById('edit-profile-modal');
+            const closeBtn = modal.querySelector('.close-modal');
+            const form = document.getElementById('edit-profile-form');
+            
+            // Открытие модального окна
+            if (editBtn) {
+                editBtn.addEventListener('click', function() {
+                    // Заполняем форму текущими значениями
+                    document.getElementById('edit-name').value = document.getElementById('detail-name').textContent;
+                    document.getElementById('edit-surname').value = document.getElementById('detail-surname').textContent;
+                    document.getElementById('edit-email').value = document.getElementById('user-email').textContent;
+                    document.getElementById('edit-phone').value = document.getElementById('detail-phone').textContent;
+                    document.getElementById('edit-address').value = document.getElementById('detail-address').textContent;
+                    
+                    modal.style.display = 'flex';
+                });
+            }
+            
+            // Закрытие модального окна
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                });
+            }
+            
+            // Закрытие при клике на оверлей
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Обработка отправки формы
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Сохраняем данные
+                    const profile = {
+                        name: document.getElementById('edit-name').value,
+                        surname: document.getElementById('edit-surname').value,
+                        email: document.getElementById('edit-email').value,
+                        phone: document.getElementById('edit-phone').value,
+                        address: document.getElementById('edit-address').value,
+                        birthday: document.getElementById('detail-birthday').textContent
+                    };
+                    
+                    localStorage.setItem('profile', JSON.stringify(profile));
+                    
+                    // Обновляем данные на странице
+                    loadProfileData();
+                    
+                    // Закрываем модальное окно
+                    modal.style.display = 'none';
+                    
+                    // Показываем уведомление
+                    showNotification('Профиль обновлен');
+                });
+            }
+        }
+    </script>
+    
+    <style>
+        /* Дополнительные стили для профиля */
+        .edit-profile-btn {
+            background: rgba(100, 150, 255, 0.1);
+            border: 1px solid rgba(100, 150, 255, 0.3);
+            color: #00ccff;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .edit-profile-btn:hover {
+            background: rgba(100, 150, 255, 0.2);
+        }
+        
+        .order-item {
+            background: rgba(100, 150, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(100, 150, 255, 0.1);
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .order-header h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .order-date {
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        .order-status {
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .order-status.delivered {
+            background: rgba(102, 255, 153, 0.1);
+            color: #66ff99;
+            border: 1px solid rgba(102, 255, 153, 0.3);
+        }
+        
+        .order-status.processing {
+            background: rgba(255, 204, 0, 0.1);
+            color: #ffcc00;
+            border: 1px solid rgba(255, 204, 0, 0.3);
+        }
+        
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(100, 150, 255, 0.05);
+        }
+        
+        .order-price {
+            font-weight: 700;
+            color: #00ccff;
+        }
+        
+        .order-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .order-details-btn, .order-repeat-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .order-details-btn {
+            background: rgba(100, 150, 255, 0.1);
+            border: 1px solid rgba(100, 150, 255, 0.3);
+            color: #00ccff;
+        }
+        
+        .order-repeat-btn {
+            background: rgba(102, 255, 153, 0.1);
+            border: 1px solid rgba(102, 255, 153, 0.3);
+            color: #66ff99;
+        }
+        
+        .order-details-btn:hover, .order-repeat-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .settings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(100, 150, 255, 0.05);
+        }
+        
+        .setting-item i:first-child {
+            width: 24px;
+            color: #00ccff;
+            margin-right: 10px;
+        }
+        
+        .setting-item span {
+            flex: 1;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(100, 150, 255, 0.2);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: #00ccff;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: rgba(0, 204, 255, 0.3);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: #121225;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 350px;
+            border: 1px solid rgba(100, 150, 255, 0.2);
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(100, 150, 255, 0.1);
+        }
+        
+        .modal-header h3 {
+            font-size: 18px;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            color: #ff3366;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(18, 18, 37, 0.8);
+            border: 1px solid rgba(100, 150, 255, 0.2);
+            border-radius: 10px;
+            color: #f0f0f0;
+            font-size: 16px;
+        }
+        
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(45deg, #0066ff, #00ccff);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 150, 255, 0.3);
+        }
+        
+        .no-orders {
+            text-align: center;
+            color: #aaa;
+            padding: 20px;
+        }
+    </style>
+</body>
+</html>
